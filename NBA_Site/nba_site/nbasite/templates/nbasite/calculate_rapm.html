@@ -1,0 +1,139 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <title>waPOW</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <style type="text/css">
+        .sortable {
+          margin: 0px auto;
+          border-collapse: collapse;
+          margin: 25px 0;
+          font-size: 0.9em;
+          font-family: sans-serif;
+          min-width: 400px;
+          box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+        h3 {
+          text-align: center;
+        }
+        .sortable thead tr {
+          background-color: #009879;
+          color: #ffffff;
+          text-align: left;
+        }
+        .sortable th,
+        .sortable td {
+            padding: 12px 15px;
+        }
+
+        .sortable tbody tr:nth-of-type(even) {
+            background-color: #4F46E5;
+        }
+
+        .sortable tbody tr:nth-of-type(odd) {
+            background-color: #DC2626;
+        }
+        .sortable tbody tr:last-of-type {
+            border-bottom: 2px solid #009879;
+        }
+
+        .sortable tbody tr.active-row {
+          font-weight: bold;
+          color: #009879;
+        }
+        .row {
+          display: flex;
+        }
+        .row > div {
+          flex: 1;
+          background: lightgrey;
+          border: 1px solid grey;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-800 font-sans leading-normal tracking-normal">
+  <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+  <nav class="relative bg-gray-300 border-b-2 border-gray-400 text-gray-900">
+    <div class="container mx-auto flex justify-center">
+      <div class="relative block p-8 lg:p-6 text-xl text-blue-600 font-bold"><h1 class ="text-center text-5xl">waPOW </h1><h1 class="italic text-center text-lg font-bold"><b>W</b>eighted <b>A</b>ssessment of <b>P</b>layer c<b>O</b>ntribution to <b>W</b>inning</h1>
+        <ul class="flex py-2 justify-center">
+          <li class="flex-none mr-2">
+            <a class="text-center block rounded py-2 px-4 bg-white hover:bg-blue-700 text-blue-500" href="../nbasite"> Home </a>
+          </li>
+
+          <li class="flex-none mr-2">
+            <a class="text-center block border border-white rounded bg-white hover:border-gray-200 text-blue-500 hover:bg-gray-200 py-2 px-4" href="eval"> Evaluation of Statistics </a>
+          </li>
+          <li class="flex-none mr-2">
+            <a class="text-center block  rounded bg-white hover:border-gray-200 bg-blue-500 text-white hover:bg-gray-200 py-2 px-4" href="calculate_rapm"> Adjusted Plus-Minus Calculation and Regularization </a>
+          </li>
+          <li class="flex-none mr-2">
+            <a class="text-center block border border-white rounded bg-white hover:border-gray-200 text-blue-500 hover:bg-gray-200 py-2 px-4" href="undervalued"> Finding Undervalued Players</a>
+          </li>
+          <li class="flex-none mr-2 ">
+            <a class="text-center block border border-white rounded bg-white hover:border-gray-200 text-blue-500 hover:bg-gray-200 py-2 px-4" href="rapm"> View Generated RAPM Data </a>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <h1 class="pt-8 text-center text-white text-3xl font-mono">Part 2: Regularizing Adjusted Plus-Minus</h1>
+  <div class="flex items-center justify-center h-32">
+
+  <a href="rapm">
+  <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold justify-center  py-2 px-4 rounded">
+  Click this to View All Generated RAPM Data
+  </button>
+  </a>
+</div>
+
+  <h1 class="text-center text-white text-4xl pt-4"> Calculating Adjusted Plus-Minus </h1>
+  <div class="grid grid-cols-1 gap-4 px-16 py-4">
+    <div class="bg-red-600   text-white font-sans rounded-lg h-100">
+      <p class="text-white text-xl px-16 pt-4 pb-6">
+        Point differential is the points that the team scores minus the points that is scored against the team while player x is on the floor. However, since basketball is a team game, it has been established that this statistic is misleading by itself. Therefore, we will follow the the method that Adjusted Plus-Minus uses to attempt to isolate an individual player contribution, removing the noise that the teammates create.
+        <br><br>
+        The method APM uses to try and isolate a <b>weight</b> of contribution to point differential for each player is as follows: We can use a m x n matrix M where m is the set of all possessions in a game and n players which are on the floor during those possessions. The entry will be set to 1 if the player is on offense, -1 if on defense and 0 if not on the floor. We use the matrix equation Ax=b where A is the mxn matrix, x are the coefficients which can be solved to isolate each n individual player’s contributions, and b are the point differentials of the possession. The method of least squares regression is utilised to find the best approximate solution for x, the coefficients.
+        <br><br>
+        To do this in Python, the first step is finding the data. We aren’t actually going to have every single possession as a row in our matrix, but rather we will use consecutive “stints” with the same ten players on the court. Every time even one player is subbed in for another or the period ends, that is the end of that “stint”.
+      </p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-4 px-16 py-4">
+    <div class="bg-indigo-800 text-white font-sans rounded-lg h-100">
+      <p class="text-white text-xl px-16 py-6">To find all “stints” in a game, we need to scrape the play-by-play data for every individual game played during the season in question. This code is located in “rapm.py”. We use @swar’s nba_api to access the “boxscoreadvancedv2” endpoint, with which we get and store play-by-play data for every game individually in JSON format.
+          <br><br>
+          One knock on APM is that due to multicollinearity, the statistic has huge variance. Therefore, we can apply <b>ridge regression</b> to reduce variance. Ridge regression is a modification on top of the least squares formula that implements a diagonal perturbation matrix.
+          <br><br>
+          If you want to know more about the linear algebra, I include a more detailed summary in the PDF report found on the home page. It can easily be done in Python using the scikit-learn Ridge model. The code to actually perform the ridge regression is in “rapm.py”. Here's the updated correlation table, now with <b>R</b>egularized <b>A</b>djusted <b>P</b>lus-<b>M</b>inus (<b>RAPM</b>).
+
+        </p>
+    </div>
+  </div>
+
+
+  <h1 class="text-center text-white text-4xl pt-4"> The Correlations </h1>
+  <div class="grid grid-cols-1 gap-4 px-64 py-4">
+    <div class="bg-indigo-800 text-white font-sans rounded-lg px-64 h-64">
+      <img class = "py-8"style="margin-left:auto;margin-right:auto;"src="{% static 'css/correlation2.png'%}">
+    </div>
+  </div>
+  <div class="grid grid-cols-1 gap-4 px-16 py-4">
+    <div class="bg-green-600 text-white font-sans rounded-lg h-100">
+      <p class="text-white text-xl px-16 py-6">Unfortunately, the correlation table for five year RAPM does not show a favorable result for RAPM, coming in behind all of the other three statistics. Oopsies! This isn’t great, is it?
+        <br><br>
+        The way my code found the correlation for RAPM is it calculated single-season RAPM for each of the seasons and ran the correlation between the team’s RAPM for that season and it’s Win%. But, the problem with single-season RAPM could be explained by some reasons. One possible reason is that the sample size is just to small. It makes sense - in any given season, one player can only be used in so many lineups, which limits the predictive ability of the statistic.
+        <br><br>
+        “RAPM”.py has the ability to increase the sample size to five years. So, we can calculate a player’s RAPM over a five year span, including all the stints the player has taken part in throughout that period. This increase in sample size should theoretically increase the predictivity of the statistic.
+        <br><br>
+        You can view all of my generated data by clicking this <a class="text-blue-800" href="rapm">link.</a>
+      </p>
+    </div>
+  </div>
+
+</body>
+<html>

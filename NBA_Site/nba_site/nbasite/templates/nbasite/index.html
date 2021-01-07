@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <title>saPOW</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+
+<body class="bg-gray-800 font-sans leading-normal tracking-normal">
+  <nav class="relative bg-gray-300 border-b-2 border-gray-400 text-gray-900">
+    <div class="container mx-auto flex justify-center">
+      <div class="relative block p-8 lg:p-6 text-xl text-blue-600 font-bold"><h1 class ="text-center text-5xl">waPOW </h1><h1 class="italic text-center text-lg font-bold"><b>W</b>eighted <b>A</b>ssessment of <b>P</b>layer c<b>O</b>ntribution to <b>W</b>inning</h1>
+        <ul class="flex py-2 justify-center">
+          <li class="flex-none mr-2">
+            <a class="text-center block border border-blue-500 rounded py-2 px-4 bg-blue-500 hover:bg-blue-700 text-white" href="#"> Home </a>
+          </li>
+
+          <li class="flex-none mr-2">
+            <a class="text-center block border border-white rounded bg-white hover:border-gray-200 text-blue-500 hover:bg-gray-200 py-2 px-4" href="eval"> Evaluation of Statistics </a>
+          </li>
+          <li class="flex-none mr-2">
+            <a class="text-center block border border-white rounded bg-white hover:border-gray-200 text-blue-500 hover:bg-gray-200 py-2 px-4" href="calculate_rapm"> Adjusted Plus-Minus Calculation and Regularization </a>
+          </li>
+          <li class="flex-none mr-2">
+            <a class="text-center block border border-white rounded bg-white hover:border-gray-200 text-blue-500 hover:bg-gray-200 py-2 px-4" href="undervalued"> Finding Undervalued Players</a>
+          </li>
+          <li class="flex-none mr-2 ">
+            <a class="text-center block border border-white rounded bg-white hover:border-gray-200 text-blue-500 hover:bg-gray-200 py-2 px-4" href="rapm"> View Generated RAPM Data </a>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="grid grid-cols-3 gap-4 py-8 px-8">
+    <div class="bg-indigo-800 text-white font-bold rounded-lg border-gray-500 shadow-lg h-72">
+      <h1 class="font-sans text-3xl text-center py-4"> Evaluation of Existing Statistics</h1>
+      <p class="text-center text-lg px-12">A comprehensive evaluation of current advanced NBA statistics that attempt to isolate individual player ‘value’/’contribution to winning’. This introduces a method to evaluate the correlation between these advanced statistics and the most important value for any player - win percentage.</p>
+    </div>
+    <div class="bg-red-500 text-white font-bold rounded-lg border-gray-500 shadow-lg h-72">
+      <h1 class="font-sans text-3xl text-center py-4"> Regularizing Adjusted Plus-Minus </h1>
+      <p class="text-center text-lg px-12"> A description and implementation of the process used to calculate Adjusted Plus-Minus, which is widely considered to be one of the best evaluation metrics. APM by itself is not predictive by any means, so we use ridge regression (a Bayesian technique) to improve the predictiveness and accuracy.</p>
+    </div>
+    <div class="bg-green-600 text-white font-bold rounded-lg border-gray-500 shadow-lg h-72">
+      <h1 class="font-sans text-3xl text-center py-4"> Finding Undervalued Players </h1>
+      <p class="text-center text-lg px-12"> Using historical rolling Regularized Adjusted Plus-Minus to build and train a model to predict player value, and then applying it to find undervalued and overvalued NBA players from the 2019-20 NBA season. Specifically, creating a list of players that are most conducive to winning. </p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-4 px-16">
+    <div class="bg-green-600 text-white font-bold rounded-lg h-72">
+      <img class="object-contain" src="{% static 'css/ball.png'%}">
+    </div>
+  </div>
+</body>
+</html>
